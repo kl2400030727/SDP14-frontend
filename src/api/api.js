@@ -5,13 +5,13 @@
 // ===========================================
 
 import axios from 'axios'
-
+import api from './axios'
 // ---- Base Axios Instance ----
-const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
-  headers: { 'Content-Type': 'application/json' },
-  timeout: 15000,
-})
+//const api = axios.create({
+  //baseURL: 'http://localhost:8080/api',
+  //headers: { 'Content-Type': 'application/json' },
+  //timeout: 15000,
+//})
 
 // ---- Request Interceptor: attach JWT token ----
 api.interceptors.request.use(
