@@ -16,7 +16,12 @@ export default function AdminJobs() {
 
   useEffect(() => {
     jobService.getAllJobs()
-      .then(r => { setJobs(r.data.data || []); setFiltered(r.data.data || []) })
+      .then(r => { 
+        // Handle both r.data.data and r.data structures
+        const jobsData = r.data.data || r.data || [];
+        setJobs(jobsData); 
+        setFiltered(jobsData); 
+      })
       .finally(() => setLoading(false))
   }, [])
 
@@ -45,7 +50,7 @@ export default function AdminJobs() {
   return (
     <DashboardLayout>
       <div className="page-header">
-        <h1 className="page-title">Job Postings Management</h1>
+        <h1 className="page-title" style={{fontFamily: 'Montserrat, var(--font-display), sans-serif', textTransform: 'capitalize', fontWeight: 700, letterSpacing: '0.5px', lineHeight: 1.1}}>Job Postings Management</h1>
         <p className="page-subtitle">{filtered.length} postings</p>
       </div>
 

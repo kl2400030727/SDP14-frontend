@@ -35,7 +35,7 @@ export default function AdminDashboard() {
   return (
     <DashboardLayout>
       <div className="page-header">
-        <h1 className="page-title">Admin Dashboard</h1>
+        <h1 className="page-title" style={{fontFamily: 'Montserrat, var(--font-display), sans-serif', textTransform: 'capitalize', fontWeight: 700, letterSpacing: '0.5px', lineHeight: 1.1}}>Admin Dashboard</h1>
         <p className="page-subtitle">Full system overview and control</p>
       </div>
 

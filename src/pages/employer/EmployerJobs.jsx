@@ -12,16 +12,39 @@ import { useNavigate } from 'react-router-dom'
 export default function EmployerJobs() {
   const navigate = useNavigate()
   const [jobs, setJobs] = useState([])
+  const [filtered, setFiltered] = useState([])
   const [loading, setLoading] = useState(true)
   const [editJob, setEditJob] = useState(null)
   const [editForm, setEditForm] = useState({})
   const [saving, setSaving] = useState(false)
+  const [search, setSearch] = useState("")
+  const [filterStatus, setFilterStatus] = useState("ALL")
 
   useEffect(() => {
     jobService.getMyPostings()
-      .then(r => setJobs(r.data.data || []))
+      .then(r => {
+        console.log('API Response:', r);
+        console.log('Jobs Data:', r.data);
+        const data = r.data.data || [];
+        console.log('Setting jobs:', data);
+        setJobs(data);
+        setFiltered(data);
+      })
+      .catch(err => {
+        console.error('Error fetching jobs:', err);
+      })
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    let data = jobs
+    if (filterStatus !== 'ALL') data = data.filter(j => j.status === filterStatus)
+    if (search) {
+      const q = search.toLowerCase()
+      data = data.filter(j => j.title?.toLowerCase().includes(q) || j.location?.toLowerCase().includes(q))
+    }
+    setFiltered(data)
+  }, [search, filterStatus, jobs])
 
   const handleDelete = async (id) => {
     if (!confirm('Cancel this job posting?')) return
@@ -55,9 +78,11 @@ export default function EmployerJobs() {
 
   if (loading) return <DashboardLayout><LoadingSpinner /></DashboardLayout>
 
+  const statuses = ['ALL','PENDING_APPROVAL','ACTIVE','CANCELLED','CLOSED']
+
   return (
     <DashboardLayout>
-      <div className="page-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end' }}>
+      <div className="page-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:12 }}>
         <div>
           <h1 className="page-title">My Job Postings</h1>
           <p className="page-subtitle">{jobs.length} total postings</p>
@@ -67,11 +92,20 @@ export default function EmployerJobs() {
         </button>
       </div>
 
-      {jobs.length === 0
+      <div style={{ display:'flex', gap:12, marginBottom:24, flexWrap:'wrap' }}>
+        <div className="search-box" style={{ flex:1, minWidth:200 }}>
+          <input placeholder="Search by title or location..." value={search} onChange={e => setSearch(e.target.value)} />
+        </div>
+        <select className="form-input" style={{ maxWidth:180 }} value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+          {statuses.map(s => <option key={s} value={s}>{s.replace('_',' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</option>)}
+        </select>
+      </div>
+
+      {filtered.length === 0
         ? <EmptyState title="No job postings yet" desc="Click 'Post New Job' to get started" />
         : (
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
-            {jobs.map(job => (
+            {filtered.map(job => (
               <div key={job.id} className="card">
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12 }}>
                   <div style={{ flex:1 }}>

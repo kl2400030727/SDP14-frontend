@@ -15,7 +15,11 @@ export default function AdminStudents() {
 
   useEffect(() => {
     adminService.getAllStudents()
-      .then(r => { setStudents(r.data.data || []); setFiltered(r.data.data || []) })
+      .then(r => { 
+        const studentsData = r.data.data || r.data || [];
+        setStudents(studentsData); 
+        setFiltered(studentsData); 
+      })
       .finally(() => setLoading(false))
   }, [])
 
@@ -44,7 +48,7 @@ export default function AdminStudents() {
   return (
     <DashboardLayout>
       <div className="page-header">
-        <h1 className="page-title">Student Management</h1>
+        <h1 className="page-title" style={{fontFamily: 'Montserrat, var(--font-display), sans-serif', textTransform: 'capitalize', fontWeight: 700, letterSpacing: '0.5px', lineHeight: 1.1}}>Student Management</h1>
         <p className="page-subtitle">{filtered.length} students</p>
       </div>
 

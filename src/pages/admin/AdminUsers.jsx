@@ -17,7 +17,11 @@ export default function AdminUsers() {
 
   useEffect(() => {
     adminService.getAllUsers()
-      .then(r => { setUsers(r.data.data || []); setFiltered(r.data.data || []) })
+      .then(r => { 
+        const usersData = r.data.data || r.data || [];
+        setUsers(usersData); 
+        setFiltered(usersData); 
+      })
       .finally(() => setLoading(false))
   }, [])
 
@@ -46,7 +50,7 @@ export default function AdminUsers() {
   return (
     <DashboardLayout>
       <div className="page-header">
-        <h1 className="page-title">User Management</h1>
+        <h1 className="page-title" style={{fontFamily: 'Montserrat, var(--font-display), sans-serif', textTransform: 'capitalize', fontWeight: 700, letterSpacing: '0.5px', lineHeight: 1.1}}>User Management</h1>
         <p className="page-subtitle">{filtered.length} users</p>
       </div>
 
